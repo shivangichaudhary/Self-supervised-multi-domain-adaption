@@ -87,10 +87,10 @@ This project's contribution is combining all three: extending SS(DA)²'s label-f
 
 | Dataset | Sensor(s) | Role |
 |---|---|---|
-| EuroSAT | Sentinel-2 | Primary benchmark for downstream classification (10 land-cover classes, labeled) |
-| NAIP | High-res RGB aerial (USA) | Second domain — differing resolution/spectral characteristics |
-| Landsat-8 | Moderate-resolution optical | Third domain for multi-domain experiments |
-| SpaceNet (building footprints) | High-res optical | Optional extension for the segmentation variant |
+| PASTIS-HD | Sentinel-1 (SAR), Sentinel-2 (optical), SPOT 6-7 (VHR optical) | Primary training + evaluation dataset (pixel-level crop-type labels, 18 classes) — used for the generator and downstream classification/segmentation accuracy |
+| MSC-France | Sentinel-2, Landsat-8, SPOT-6 | Self-supervised pretraining only (unlabeled) — trains the domain encoder before PASTIS-HD fine-tuning |
+| MultiEarth 2022 | Sentinel-1, Sentinel-2, Landsat-5, Landsat-8 | Generalization test dataset — leave-one-pair-out evaluation on unseen sensor combinations |
+| SpaceNet 6 | SAR (Capella), high-res optical (WorldView-2) | Held-out zero-shot test only — never used in training; tests generalization to an unseen sensor and unseen geography |
 
 ## Repository Structure
 
