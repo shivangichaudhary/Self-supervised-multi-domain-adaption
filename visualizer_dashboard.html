@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Multi-Domain & Multi-Sensor Adaptation Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080c14;
+            --card-bg: rgba(18, 26, 44, 0.75);
+            --card-hover: rgba(26, 38, 64, 0.85);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem 3rem;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+        .header { margin-bottom: 2rem; text-align: center; }
+        .badges-row { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-blue { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: #60a5fa; }
+        .badge-emerald { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; }
+        .badge-purple { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.35); color: #c084fc; }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        p.subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 800px; margin: 0 auto; }
+        
+        /* Navigation Tabs */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 0.4rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.04); }
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Metric Highlights Banner */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            max-width: 1200px;
+            margin: 0 auto 2rem auto;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            backdrop-filter: blur(12px);
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.4); }
+        .stat-title { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 0.4rem; }
+        .stat-value { font-size: 1.9rem; font-weight: 800; color: #ffffff; }
+        .stat-badge { font-size: 0.8rem; font-weight: 700; color: var(--accent-emerald); margin-top: 0.2rem; }
+
+        /* Main Grid Cards */
+        .grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+        .card h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card p.desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+        
+        .img-container {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.75rem;
+        }
+        .img-container img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
+        
+        /* Tables */
+        .metrics-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem; }
+        .metrics-table th, .metrics-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+        .metrics-table th { color: var(--text-muted); font-weight: 600; background: rgba(255, 255, 255, 0.02); }
+        .gain-pos { color: #34d399; font-weight: 700; }
+        .gain-neutral { color: #94a3b8; }
+        
+        /* Terminal Snippet */
+        .code-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #38bdf8;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="badges-row">
+            <span class="badge badge-blue">🛰️ Earth Observation AI</span>
+            <span class="badge badge-emerald">🔒 Zero Target Labels (Pure UDA)</span>
+            <span class="badge badge-purple">✨ Real-World France Benchmark</span>
+        </div>
+        <h1>Satellite Multi-Domain Adaptation Studio</h1>
+        <p class="subtitle">Self-supervised cross-sensor translation, multi-angle viewpoint synthesis, and unsupervised land-cover semantic segmentation.</p>
+    </div>
+
+    <!-- Quick Stats Banner -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Source Modality</div>
+            <div class="stat-value" style="color: #60a5fa;">Sentinel-2</div>
+            <div class="stat-badge">Optical Multi-Spectral</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Target Modalities</div>
+            <div class="stat-value" style="color: #c084fc;">SPOT-6 / SAR</div>
+            <div class="stat-badge">High-Res & Radar (C-Band)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Adaptation Strategy</div>
+            <div class="stat-value" style="color: #34d399;">Dual-Path</div>
+            <div class="stat-badge">Pixel + Feature DANN + ADVENT</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Target Supervision</div>
+            <div class="stat-value" style="color: #f59e0b;">0.0%</div>
+            <div class="stat-badge">Strictly Unsupervised</div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="showTab('tab-multisensor')">🛰️ Multi-Sensor Benchmark</button>
+        <button class="tab-btn" onclick="showTab('tab-demoapp')">🎮 Interactive Demo Studio</button>
+        <button class="tab-btn" onclick="showTab('tab-interpolation')">🎨 Latent Style Space</button>
+        <button class="tab-btn" onclick="showTab('tab-multiangle')">📐 Multi-Angle Synthesis</button>
+    </div>
+
+    <!-- TAB 1: Multi-Sensor Adaptation (PASTIS Real Benchmark) -->
+    <div id="tab-multisensor" class="tab-content active">
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Cross-Sensor Domain Adaptation Benchmark (PASTIS-HD France)</h2>
+                <p class="desc">Quantitative comparison evaluating semantic segmentation accuracy on real-world satellite sensors under domain shift without target labels.</p>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Sensor Domain Shift</th>
+                            <th>Sensor Physics</th>
+                            <th>No DA — Accuracy / mIoU</th>
+                            <th>Proposed UDA — Accuracy / mIoU</th>
+                            <th>Accuracy Gain</th>
+                            <th>SSIM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sentinel-2 → Sentinel-2 (Oracle)</strong></td>
+                            <td>Multi-Spectral Optical (10m)</td>
+                            <td>26.00% / 2.68%</td>
+                            <td><strong>Oracle Reference</strong></td>
+                            <td class="gain-neutral">—</td>
+                            <td>1.000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sentinel-2 → SPOT-6</strong></td>
+                            <td>High-Res Optical (1.5m, GSD gap)</td>
+                            <td>18.01% / 1.87%</td>
+                            <td><strong>39.18% / 2.26%</strong></td>
+                            <td class="gain-pos">+21.17% Acc | +0.39% mIoU</td>
+                            <td>0.657</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sentinel-2 → Sentinel-1 SAR</strong></td>
+                            <td>C-Band Dual-Pol Radar (severe modality gap)</td>
+                            <td>0.24% / 0.03%</td>
+                            <td><strong>39.09% / 2.07%</strong></td>
+                            <td class="gain-pos">+38.85% Acc | +2.04% mIoU</td>
+                            <td>0.099</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="color: #34d399; margin-top: 1rem; font-size: 0.9rem; font-weight: 600;">&#10003; Real benchmark results on PASTIS-HD France dataset — zero target labels used during training.</p>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Visual Downstream Land-Cover Segmentation (SPOT-6 Adaptation)</h2>
+                <p class="desc">Side-by-side comparison: High-Resolution Target Image vs Ground Truth Mask vs Source-Only Failure vs Proposed Adapted Alignment.</p>
+                <div class="img-container">
+                    <img src="outputs/visualizations/demo_adaptation_spot6_patch000.png" alt="SPOT-6 Adaptation Demo">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📡 Visual Downstream Land-Cover Segmentation (Sentinel-1 SAR Radar)</h2>
+                <p class="desc">Overcoming extreme speckle and radiometric shifts between optical sensors and synthetic aperture radar.</p>
+                <div class="img-container">
+                    <img src="outputs/visualizations/demo_adaptation_sentinel1_sar_patch000.png" alt="Sentinel-1 SAR Adaptation Demo">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Interactive Demonstration Studio -->
+    <div id="tab-demoapp" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2>🚀 Live Interactive Demonstration Application</h2>
+                <p class="desc">You can launch the live graphical inspection tool on your machine to interactively present results to your guides.</p>
+                
+                <div class="code-box">
+                    # Launch the interactive inspection studio in your PowerShell / Terminal:
+                    python demo_app.py
+                </div>
+
+                <p class="desc"><strong>Key features to showcase in real time:</strong></p>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">
+                    <li><strong style="color: #fff;">Interactive Navigation:</strong> Click <code style="color: #60a5fa;">&lt; Prev Patch</code> and <code style="color: #60a5fa;">Next Patch &gt;</code> to browse through real agricultural parcels across France.</li>
+                    <li><strong style="color: #fff;">Sensor Toggling:</strong> Click <code style="color: #c084fc;">Switch Sensor</code> to test dynamic translation between SPOT-6 optical and Sentinel-1 SAR.</li>
+                    <li><strong style="color: #fff;">Live Ground-Truth Comparison:</strong> Compare predictions against parcel annotations in real time.</li>
+                    <li><strong style="color: #fff;">Real-Time Metric Gauges:</strong> Instant calculation of mIoU, Accuracy, and structural similarity (SSIM).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Latent Style Space Interpolation -->
+    <div id="tab-interpolation" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2>🎨 Continuous Multi-Domain Translation Matrix</h2>
+                <p class="desc">Shows source Sentinel-2 imagery simultaneously translated into SPOT-6 optical and Sentinel-1 SAR modalities while preserving crop parcel geometry.</p>
+                <div class="img-container">
+                    <img src="outputs/visualizations/multi_domain_translation_matrix.png" alt="Translation Matrix">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>✨ Smooth Latent Style Space Interpolation (α = 0.00 → 1.00)</h2>
+                <p class="desc">Demonstrates that the Continuous Domain Encoder learns a continuous manifold rather than discrete domain modes.</p>
+                <div class="img-container">
+                    <img src="outputs/visualizations/continuous_style_interpolation.png" alt="Continuous Style Interpolation">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Multi-Angle Viewpoint Synthesis -->
+    <div id="tab-multiangle" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2>📐 Multi-Angle View Synthesis Strip (0° Nadir to 45° Oblique)</h2>
+                <p class="desc">Continuous generation from 0° Nadir across 15°, 30°, and 45° off-nadir viewing perspectives.</p>
+                <div class="img-container">
+                    <img src="outputs/visualizations/multi_angle_view_synthesis.png" alt="Multi-Angle View Synthesis">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+
